@@ -1,45 +1,46 @@
-# ASP.NET Core Response Caching Sample
+# Response Caching in ASP.NET Core (.NET 10)
 
-A beginner-friendly ASP.NET Core Minimal API sample demonstrating **Response Caching Middleware** with practical examples and Swagger/OpenAPI integration.
+> **Server-side, client-side, and proxy caching in one beginner-friendly sample** — 7 practical Minimal API endpoints covering every caching scenario with Swagger/OpenAPI.
 
-![.NET](https://img.shields.io/badge/.NET-10.0-blue)
-![C#](https://img.shields.io/badge/C%23-12-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10.0-512BD4)](https://docs.microsoft.com/aspnet/core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Visit CodingDroplets](https://img.shields.io/badge/Website-codingdroplets.com-blue?style=flat&logo=google-chrome&logoColor=white)](https://codingdroplets.com/)
+[![YouTube](https://img.shields.io/badge/YouTube-CodingDroplets-red?style=flat&logo=youtube&logoColor=white)](https://www.youtube.com/@CodingDroplets)
+[![Patreon](https://img.shields.io/badge/Patreon-Support%20Us-orange?style=flat&logo=patreon&logoColor=white)](https://www.patreon.com/CodingDroplets)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support%20Us-yellow?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/codingdroplets)
+[![GitHub](https://img.shields.io/badge/GitHub-codingdroplets-black?style=flat&logo=github&logoColor=white)](http://github.com/codingdroplets/)
 
-## What is Response Caching?
+---
 
-Response Caching in ASP.NET Core allows you to cache HTTP responses on the server, client, or proxy servers. This sample demonstrates:
-- **Server-side caching** via Response Caching Middleware
-- **Client-side caching** with `ResponseCacheLocation.Client`
-- **Vary by query keys** for query-dependent caching
-- **Vary by headers** for header-based cache variations
-- **Disabling cache** for sensitive data
+## 🚀 Support the Channel — Join on Patreon
 
-## Key Features
+If this sample saved you time, consider joining our Patreon community.
+You'll get **exclusive .NET tutorials, premium code samples, and early access** to new content — all for the price of a coffee.
 
-- ✅ **Minimal API** architecture (no controllers, clean and simple)
-- ✅ **Swagger/OpenAPI** integration for easy testing
-- ✅ **7 practical endpoints** covering different caching scenarios
-- ✅ **Beginner-friendly** inline comments explaining each concept
-- ✅ **Repository Pattern** ready structure
-- ✅ **.NET 10** with latest features
+👉 **[Join CodingDroplets on Patreon](https://www.patreon.com/CodingDroplets)**
 
-## API Endpoints
+Prefer a one-time tip? [Buy us a coffee ☕](https://buymeacoffee.com/codingdroplets)
 
-| Endpoint | Method | Description | Cache Duration |
-|----------|--------|-------------|----------------|
-| `/api/products` | GET | List all products | 60 seconds |
-| `/api/products/by-category` | GET | Filter by category | 120 seconds (varies by query) |
-| `/api/user-profile` | GET | User profile | 300 seconds (client-only) |
-| `/api/time` | GET | Current UTC time | 10 seconds (varies by header) |
-| `/api/random-number` | GET | Random number | No cache |
-| `/api/private-data` | GET | Private data | No cache |
-| `/api/login` | POST | Login endpoint | No cache (security) |
-| `/api/cache-status` | GET | Check cache headers | No cache |
+---
 
-## Architecture Overview
+## 🎯 What You'll Learn
+
+- How to configure **Response Caching Middleware** in ASP.NET Core
+- How to cache responses on the **server**, **client**, and **proxy** with `Cache-Control`
+- How to use **Vary by query key** for query-parameter-dependent caching
+- How to use **Vary by header** for header-based cache variations
+- How to **disable caching** for sensitive or dynamic endpoints
+- How to inspect cache behaviour using `Cache-Control`, `Vary`, and `Age` response headers
+
+---
+
+## 🗺️ Architecture Overview
 
 ```
+Client Request
+      │
+      ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                     Client Request                          │
 └─────────────────────┬───────────────────────────────────────┘
@@ -48,145 +49,179 @@ Response Caching in ASP.NET Core allows you to cache HTTP responses on the serve
 ┌─────────────────────────────────────────────────────────────┐
 │              Response Caching Middleware                    │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │ • Checks Cache-Control headers                      │   │
-│  │ • Stores cached responses in memory                 │   │
-│  │ • Returns cached response if available              │   │
+│  │  Cached response exists?                            │   │
+│  │  YES → return cached response (Age header added)    │   │
+│  │  NO  → forward to endpoint → cache the response     │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────┬───────────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   Minimal API Endpoints                     │
-│  (Products, User Profile, Time, etc.)                       │
+│  Products / User Profile / Time / Random / Private / Login  │
 └─────────────────────┬───────────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                 HTTP Response with Headers                  │
-│  Cache-Control, Vary, Age, ETag                             │
+│              HTTP Response + Cache Headers                  │
+│         Cache-Control · Vary · Age · ETag                   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+## 📋 Endpoints & Caching Strategies
 
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
-
-### Clone and Run
-
-```bash
-# Clone the repository
-git clone https://github.com/codingdroplets/dotnet-response-caching.git
-cd dotnet-response-caching
-
-# Run the project
-dotnet run --project src/DotNetResponseCaching.Api
-
-# Open in browser
-# Visit: http://localhost:5000/swagger
-```
-
-### Using Swagger
-
-1. Run the application
-2. Navigate to `http://localhost:5000/swagger`
-3. Try different endpoints and observe cache headers:
-   - Check **Response Headers** for `Cache-Control`, `Vary`, `Age`
-   - Make same request twice - second request should be faster (cached)
-
-### Testing Cache Behavior
-
-```bash
-# Test basic caching
-curl -I http://localhost:5000/api/products
-# Look for: Cache-Control: public, max-age=60
-
-# Test query-based caching
-curl "http://localhost:5000/api/products/by-category?category=Audio"
-curl "http://localhost:5000/api/products/by-category?category=Electronics"
-# Each category has its own cached version
-
-# Test no-cache headers
-curl -I http://localhost:5000/api/random-number
-# Look for: Cache-Control: no-store, no-cache
-```
-
-## Cache Headers Explained
-
-| Header | Description |
-|--------|-------------|
-| `Cache-Control` | Directives for caching (public, private, no-store, max-age) |
-| `Vary` | Specifies which request headers affect caching |
-| `Age` | Time in seconds the response was cached |
-| `ETag` | Identifier for a specific version of content |
-
-## Cache Profiles
-
-The sample includes predefined cache profiles in `Program.cs`:
-
-```csharp
-// Default: 60 seconds, any location
-// Short: 30 seconds, client only
-// Long: 300 seconds, varies by category and page
-```
-
-## Use Cases
-
-- **Products listing**: Cache for frequently accessed data
-- **User profiles**: Client-side cache for personalized but stable data
-- **Time/Date**: Short cache for real-time but not critical data
-- **Login/Auth**: Never cache security-sensitive endpoints
-- **Search results**: Query-based caching for filtered data
-
-## What's NOT Covered
-
-This sample covers **Response Caching** (HTTP response caching). Related but different topics:
-
-- **Output Caching** - Caches entire rendered output (in-memory)
-- **In-Memory Caching** - `IMemoryCache` for programmatic caching
-- **Distributed Caching** - Redis/SQL Server for multi-server setups
-
-## Tech Stack
-
-- **.NET 10.0** - Latest .NET runtime
-- **ASP.NET Core** - Web framework
-- **Minimal APIs** - Lightweight API pattern
-- **Swashbuckle** - Swagger/OpenAPI support
-- **C# 12** - Modern C# features
-
-## Project Structure
-
-```
-dotnet-response-caching/
-├── src/
-│   └── DotNetResponseCaching.Api/
-│       ├── Program.cs           # Main application code
-│       ├── appsettings.json     # Configuration
-│       └── Properties/
-│           └── launchSettings.json
-├── DotNetResponseCaching.sln    # Solution file
-└── README.md
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License.
-
-## Author
-
-**Coding Droplets**
-- YouTube: [codingdroplets.com](https://codingdroplets.com)
-- Patreon: [patreon.com/codingdroplets](https://www.patreon.com/codingdroplets)
+| Endpoint | Method | Cache Strategy | Duration |
+|----------|--------|----------------|----------|
+| `/api/products` | GET | Server + public | 60 seconds |
+| `/api/products/by-category` | GET | Vary by `category` query | 120 seconds |
+| `/api/user-profile` | GET | Client-only | 300 seconds |
+| `/api/time` | GET | Vary by `Accept-Language` header | 10 seconds |
+| `/api/random-number` | GET | No cache (`no-store`) | — |
+| `/api/private-data` | GET | No cache (private) | — |
+| `/api/login` | POST | No cache (security) | — |
+| `/api/cache-status` | GET | No cache (diagnostic) | — |
 
 ---
 
-**Visit Now**: https://codingdroplets.com
+## 📁 Project Structure
 
-**Join our Patreon to Learn & Level Up**: https://www.patreon.com/codingdroplets
+```
+dotnet-response-caching/
+├── DotNetResponseCaching.sln
+└── src/
+    └── DotNetResponseCaching.Api/
+        ├── Program.cs           # Middleware setup, endpoints, cache profiles
+        ├── appsettings.json
+        └── Properties/
+            └── launchSettings.json
+```
 
-⭐ Star this repository if you found it helpful!
+---
+
+## 🛠️ Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- Any IDE: Visual Studio 2022+, VS Code, or JetBrains Rider
+
+---
+
+## ⚡ Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/codingdroplets/dotnet-response-caching.git
+cd dotnet-response-caching
+
+# Run the API
+dotnet run --project src/DotNetResponseCaching.Api
+
+# Open Swagger UI → http://localhost:5000/swagger
+```
+
+---
+
+## 🔧 How It Works
+
+### Step 1 — Register Middleware and Cache Profiles
+
+```csharp
+builder.Services.AddResponseCaching();
+
+builder.Services.AddControllers(options =>
+{
+    options.CacheProfiles.Add("Default",
+        new CacheProfile { Duration = 60 });       // 60s, any location
+    options.CacheProfiles.Add("Short",
+        new CacheProfile { Duration = 30, Location = ResponseCacheLocation.Client });
+    options.CacheProfiles.Add("Long",
+        new CacheProfile { Duration = 300, VaryByQueryKeys = new[] { "category", "page" } });
+});
+
+// Must be placed before routing middleware
+app.UseResponseCaching();
+```
+
+### Step 2 — Decorate Endpoints with Cache Behaviour
+
+```csharp
+// Server-side cache for 60 seconds
+app.MapGet("/api/products", GetProducts)
+   .CacheOutput(p => p.Expire(TimeSpan.FromSeconds(60)));
+
+// Vary by query key — each category cached separately
+app.MapGet("/api/products/by-category", GetByCategory)
+   .CacheOutput(p => p.Expire(TimeSpan.FromSeconds(120)).SetVaryByQuery("category"));
+
+// Client-only — no server-side store
+app.MapGet("/api/user-profile", GetUserProfile)
+   .CacheOutput(p => p.Expire(TimeSpan.FromSeconds(300)).NoStore());
+
+// No caching for sensitive/dynamic endpoints
+app.MapPost("/api/login", Login)
+   .CacheOutput(p => p.NoStore());
+```
+
+### Step 3 — Read the Cache Headers
+
+Make a request, then check response headers:
+
+```bash
+curl -I http://localhost:5000/api/products
+# Cache-Control: public, max-age=60
+# Age: 0   ← first hit (not yet cached)
+
+curl -I http://localhost:5000/api/products
+# Age: 4   ← served from cache
+```
+
+---
+
+## 🤔 Cache Headers Explained
+
+| Header | Description |
+|--------|-------------|
+| `Cache-Control` | Directives: `public`, `private`, `no-store`, `max-age` |
+| `Vary` | Which request headers affect cache key (`Accept-Language`, etc.) |
+| `Age` | Seconds this response has been in cache |
+| `ETag` | Identifier for a specific version of the content |
+
+---
+
+## 🤔 Response Caching vs Related Concepts
+
+| Type | What It Caches | Storage | Use When |
+|------|---------------|---------|----------|
+| **Response Caching** | HTTP responses (this sample) | Server memory / proxy | Public, rarely-changing API responses |
+| **Output Caching** | Entire rendered output | In-memory (server) | Razor Pages, full page caching |
+| **In-Memory Caching** | Arbitrary objects (`IMemoryCache`) | Server memory | Internal data, computed results |
+| **Distributed Caching** | Arbitrary objects (Redis / SQL) | External store | Multi-server / load-balanced apps |
+
+---
+
+## 📚 References
+
+- [Response caching in ASP.NET Core — Microsoft Learn](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response)
+- [Cache-Control directives — MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
+- [HTTP Caching — RFC 9111](https://www.rfc-editor.org/rfc/rfc9111)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 🔗 Connect with CodingDroplets
+
+| Platform | Link |
+|----------|------|
+| 🌐 Website | https://codingdroplets.com/ |
+| 📺 YouTube | https://www.youtube.com/@CodingDroplets |
+| 🎁 Patreon | https://www.patreon.com/CodingDroplets |
+| ☕ Buy Me a Coffee | https://buymeacoffee.com/codingdroplets |
+| 💻 GitHub | http://github.com/codingdroplets/ |
+
+> **Want more samples like this?** [Support us on Patreon](https://www.patreon.com/CodingDroplets) or [buy us a coffee ☕](https://buymeacoffee.com/codingdroplets) — every bit helps keep the content coming!
